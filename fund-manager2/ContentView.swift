@@ -6,19 +6,31 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+
+    @Query(sort: \Profile.createdAt)
+    private var profiles: [Profile]
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+
+        if let profile = profiles.first {
+
+            NavigationStack {
+                DashboardView(profile: profile)
+            }
+
+        } else {
+
+            NavigationStack {
+                CreateProfileView()
+            }
+
         }
-        .padding()
+
     }
 }
 
-#Preview {
-    ContentView()
-}
+
+
