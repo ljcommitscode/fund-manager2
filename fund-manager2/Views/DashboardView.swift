@@ -10,13 +10,24 @@ import SwiftData
 
 struct DashboardView: View {
     let profile: Profile
-    @Query private var accounts: [Account]
-    @State private var newAccountTitle = ""
+    
     @Environment(\.modelContext) private var modelContext
+    @Query private var accounts: [Account]
+    @Query private var snapshots: [Snapshot]
+    @State private var newAccountTitle = ""
     @State private var showingAccount = false
+    @State private var gonnaUpdate = false
+    @State private var selectedAccount: Account?
     var body: some View {
         VStack {
             Text("Hello \(profile.username)!")
+            .toolbar {
+                ToolbarItemGroup {
+                    Button("Update") {
+                        gonnaUpdate = true
+                    }
+                }
+            }
             HStack{
                 TextField("New Account", text: $newAccountTitle)
                     .textFieldStyle(.roundedBorder)
@@ -30,7 +41,7 @@ struct DashboardView: View {
                 ForEach(accounts) { account in
                     HStack {
                         Button(account.name) {
-                            accountDetails(name: account.name)
+                            selectedAccount = account
                             showingAccount = true
                         }
                         Spacer()
@@ -39,7 +50,13 @@ struct DashboardView: View {
                 }
             }
             .sheet(isPresented: $showingAccount) {
-                AccountMenuView(profile: profile)
+                //unwraps optional
+                if let account = selectedAccount {
+                    AccountMenuView(profile: profile, selectedAccount: account)
+                }
+            }
+            .sheet(isPresented: $gonnaUpdate) {
+                UpdateMenuView(profile: profile)
             }
             
         }
@@ -48,8 +65,5 @@ struct DashboardView: View {
         let newAccount = Account(name: newAccountTitle, amount: 0)
         modelContext.insert(newAccount)
         newAccountTitle = ""
-    }
-    private func accountDetails(name: String) {
-        
     }
 }

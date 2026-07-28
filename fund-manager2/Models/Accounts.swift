@@ -14,8 +14,12 @@ class Account {
     var name: String
     var amount: Double
     
+    @Relationship(deleteRule: .cascade)
+    var snapshots: [Snapshot]
+    
     init(name: String, amount: Double) {
         self.name = name
         self.amount = amount
+        self.snapshots = []
     }
 }
