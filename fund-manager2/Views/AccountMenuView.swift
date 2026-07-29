@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import Charts
+import Foundation
 
 struct AccountMenuView: View {
     
@@ -24,19 +25,26 @@ struct AccountMenuView: View {
     
     @Environment(\.modelContext) private var modelContext
     @Query private var snapshots: [Snapshot]
+    @State private var rawSelectedDate: Date?
+    @State private var selectedValue: Double?
+    private var filteredSnapshots: [Snapshot] {
+        snapshots.filter { $0.accountName == selectedAccount.name }
+    }
     
     var body: some View {
         VStack {
             Text(selectedAccount.name)
-            Text("\(selectedAccount.amount)")
-            Text("\(selectedAccount.id)")
-            ForEach(snapshots) { snap in
-                if snap.accountName == selectedAccount.name {
-                    Text("\(snap.createdAt)")
-                    Text("\(snap.amount)")
-                    Spacer()
+                .font(.headline)
+            Spacer()
+            Chart {
+                ForEach(filteredSnapshots) { snap in
+                    BarMark(
+                        x: .value("Month", snap.createdAt, unit: .day),
+                        y: .value("Views", snap.amount)
+                    )
                 }
             }
+            
         }
     }
 }
