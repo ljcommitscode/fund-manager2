@@ -17,7 +17,7 @@ class Snapshot {
     
     
     init(createdAt: Date, name: String, amount: Double) {
-        self.createdAt = .now
+        self.createdAt = createdAt
         self.accountName = name
         self.amount = amount
     }

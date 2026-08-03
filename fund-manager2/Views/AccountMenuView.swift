@@ -27,6 +27,7 @@ struct AccountMenuView: View {
 
     @State private var selectedDate: Date?
     @State private var dateIdle: Date?
+    @State private var chartRefreshID = UUID()
 
     private var filteredSnapshots: [Snapshot] {
         snapshots
@@ -86,8 +87,11 @@ struct AccountMenuView: View {
             .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 16))
             .shadow(color: .gray.opacity(0.15), radius: 6, x: 0, y: 3)
         }
+        .id(chartRefreshID)
         .padding()
         .onAppear {
+            ensureDailySnapshots()
+
             if selectedDate == nil, let latest = filteredSnapshots.last?.createdAt {
                 if dateIdle == nil {
                     selectedDate = latest
@@ -104,6 +108,44 @@ struct AccountMenuView: View {
             if selectedDate != nil {
                 dateIdle = selectedDate
             }
+        }
+    }
+
+    private func ensureDailySnapshots() {
+        let accountSnapshots = filteredSnapshots
+        guard accountSnapshots.count > 1 else { return }
+
+        var lastValidSnapshot: Snapshot? = nil
+        let calendar = Calendar.current
+        var existingDayKeys = Set(accountSnapshots.map { calendar.startOfDay(for: $0.createdAt) })
+
+        for snapshot in accountSnapshots {
+            if let previousSnapshot = lastValidSnapshot {
+                let previousDay = calendar.startOfDay(for: previousSnapshot.createdAt)
+                let currentDay = calendar.startOfDay(for: snapshot.createdAt)
+                var fillDate = calendar.date(byAdding: .day, value: 1, to: previousDay) ?? previousDay
+
+                while fillDate < currentDay {
+                    if !existingDayKeys.contains(fillDate) {
+                        let filledSnapshot = Snapshot(
+                            createdAt: fillDate,
+                            name: selectedAccount.name,
+                            amount: previousSnapshot.amount
+                        )
+                        modelContext.insert(filledSnapshot)
+                        existingDayKeys.insert(fillDate)
+                    }
+
+                    fillDate = calendar.date(byAdding: .day, value: 1, to: fillDate) ?? fillDate
+                }
+            }
+
+            lastValidSnapshot = snapshot
+        }
+
+        if modelContext.hasChanges {
+            try? modelContext.save()
+            chartRefreshID = UUID()
         }
     }
 
