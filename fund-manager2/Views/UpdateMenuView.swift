@@ -58,9 +58,36 @@ struct UpdateMenuView: View {
     }
     
     private func addSnap(accountName: String, accountAmount: Double) {
-        let newSnap = Snapshot(createdAt: .now ,name: accountName, amount: accountAmount)
+        let now = Date()
+        let calendar = Calendar.current
+        
+        // 1. Calculate boundaries
+        let startOfDay = calendar.startOfDay(for: now)
+        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return }
+        
+        // 2. Fetch snapshots matching ONLY the name (keeps the predicate simple)
+        let fetchDescriptor = FetchDescriptor<Snapshot>(
+            predicate: #Predicate<Snapshot> { snapshot in
+                snapshot.accountName == accountName
+            }
+        )
+        
+        // 3. Filter for today's dates manually and delete them
+        if let existingSnaps = try? modelContext.fetch(fetchDescriptor) {
+            let todaysSnaps = existingSnaps.filter { snap in
+                snap.createdAt >= startOfDay && snap.createdAt < endOfDay
+            }
+            
+            for snap in todaysSnaps {
+                modelContext.delete(snap)
+            }
+        }
+        
+        // 4. Insert the new snapshot
+        let newSnap = Snapshot(createdAt: now, name: accountName, amount: accountAmount)
         modelContext.insert(newSnap)
     }
+
 
     private func saveChanges() {
         for account in accounts {
@@ -70,11 +97,11 @@ struct UpdateMenuView: View {
             else { continue }
 
             account.amount = value
-            addSnap(accountName: text, accountAmount: value)
-            
-            dismiss()
+            // Note: You probably want to pass account.name here instead of text
+            addSnap(accountName: account.name, accountAmount: value)
         }
 
         try? modelContext.save()
+        dismiss() // Move this here so it executes AFTER the loop completes
     }
 }

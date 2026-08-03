@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+
 @Model
 class Snapshot {
     var createdAt: Date
@@ -20,4 +21,5 @@ class Snapshot {
         self.accountName = name
         self.amount = amount
     }
+    
 }

@@ -39,8 +39,8 @@ struct AccountMenuView: View {
             Chart {
                 ForEach(filteredSnapshots) { snap in
                     BarMark(
-                        x: .value("Month", snap.createdAt, unit: .day),
-                        y: .value("Views", snap.amount)
+                        x: .value("Day", snap.createdAt, unit: .day),
+                        y: .value("Amount", snap.amount)
                     )
                 }
             }

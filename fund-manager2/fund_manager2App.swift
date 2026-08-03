@@ -16,5 +16,6 @@ struct fund_manager2App: App {
         }
         .modelContainer(for: Profile.self)
         .modelContainer(for: Account.self)
+        .modelContainer(for: Snapshot.self)
     }
 }
