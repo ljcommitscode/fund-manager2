@@ -17,6 +17,8 @@ struct DashboardView: View {
     @State private var newAccountTitle = ""
     @State private var showingAccount = false
     @State private var gonnaUpdate = false
+    @State private var newAccount = false
+    @State private var settings = false
     @State private var selectedAccount: Account?
     var body: some View {
         VStack {
@@ -26,9 +28,17 @@ struct DashboardView: View {
                     Button("Update") {
                         gonnaUpdate = true
                     }
+                    Spacer()
+                    Button("New Account") {
+                        newAccount = true
+                    }
+                    Spacer()
+                    Button("Settings") { //need to wire this in
+                        settings = true
+                    }
                 }
             }
-            HStack{
+            /*HStack{
                 TextField("New Account", text: $newAccountTitle)
                     .textFieldStyle(.roundedBorder)
                 Button("Add") {
@@ -36,7 +46,7 @@ struct DashboardView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(newAccountTitle.isEmpty)
-            }
+            }*/
             List {
                 ForEach(accounts) { account in
                     HStack {
@@ -58,11 +68,13 @@ struct DashboardView: View {
             .sheet(isPresented: $gonnaUpdate) {
                 UpdateMenuView(profile: profile)
             }
-            
+            .sheet(isPresented: $newAccount) {
+                CreateAccountView(profile: profile)
+            }
         }
     }
     private func addAccount() {
-        let newAccount = Account(name: newAccountTitle, amount: 0)
+        let newAccount = Account(name: newAccountTitle, amount: 0, percent: 0)
         modelContext.insert(newAccount)
         newAccountTitle = ""
     }
