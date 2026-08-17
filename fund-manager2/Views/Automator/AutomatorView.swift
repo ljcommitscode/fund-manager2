@@ -24,21 +24,11 @@ struct AutomatorView: View {
         NavigationStack {
             Form {
                 Section("Amount to Add") {
-                    TextField(
-                        "0.00",
-                        text: Binding(
-                            get: {
-                                totalAmount
-                            },
-                            set: { newValue in
-                                totalAmount = filteredMoneyInput(newValue)
-                            }
-                        )
+                    MoneyTextField(
+                        text: $totalAmount,
+                        placeholder: "0.00"
                     )
-                    .multilineTextAlignment(.trailing)
-                    #if os(iOS)
-                    .keyboardType(.decimalPad)
-                    #endif
+                    .frame(height: 22)
                 }
 
                 Section("Accounts") {
@@ -74,52 +64,6 @@ struct AutomatorView: View {
                 Text(errorMessage)
             }
         }
-    }
-
-    // MARK: - Money Input
-    
-    private func filteredMoneyInput(_ input: String) -> String {
-        var result = ""
-        var hasDecimal = false
-        var decimalPlaces = 0
-
-        for character in input {
-
-            // Allow a negative sign only as the first character.
-            if character == "-" {
-                if result.isEmpty {
-                    result.append(character)
-                }
-                continue
-            }
-
-            // Allow only one decimal point.
-            if character == "." {
-                if !hasDecimal {
-                    hasDecimal = true
-                    result.append(character)
-                }
-                continue
-            }
-
-            // Allow numbers.
-            if character.isNumber {
-
-                // Once we have two digits after the decimal,
-                // ignore any additional digits.
-                if hasDecimal {
-                    guard decimalPlaces < 2 else {
-                        continue
-                    }
-
-                    decimalPlaces += 1
-                }
-
-                result.append(character)
-            }
-        }
-
-        return result
     }
     
     // MARK: - Automator

@@ -19,22 +19,18 @@ struct UpdateMenuView: View {
 
                         Spacer()
 
-                        TextField(
-                            "0.00",
+                        MoneyTextField(
                             text: Binding(
                                 get: {
                                     amounts[account.persistentModelID] ?? ""
                                 },
                                 set: { newValue in
-                                    amounts[account.persistentModelID] =
-                                        filteredMoneyInput(newValue)
+                                    amounts[account.persistentModelID] = newValue
                                 }
-                            )
+                            ),
+                            placeholder: "0.00"
                         )
-                        .multilineTextAlignment(.trailing)
-                        #if os(iOS)
-                        .keyboardType(.decimalPad)
-                        #endif
+                        .frame(height: 22)
                     }
                 }
 
@@ -49,49 +45,7 @@ struct UpdateMenuView: View {
         }
     }
     
-    private func filteredMoneyInput(_ input: String) -> String {
-        var result = ""
-        var hasDecimal = false
-        var decimalPlaces = 0
-
-        for character in input {
-
-            // Allow a negative sign only as the first character.
-            if character == "-" {
-                if result.isEmpty {
-                    result.append(character)
-                }
-                continue
-            }
-
-            // Allow only one decimal point.
-            if character == "." {
-                if !hasDecimal {
-                    hasDecimal = true
-                    result.append(character)
-                }
-                continue
-            }
-
-            // Allow numbers.
-            if character.isNumber {
-
-                // Once we have two digits after the decimal,
-                // ignore any additional digits.
-                if hasDecimal {
-                    guard decimalPlaces < 2 else {
-                        continue
-                    }
-
-                    decimalPlaces += 1
-                }
-
-                result.append(character)
-            }
-        }
-
-        return result
-    }
+   
     private func populateFields() {
         for account in accounts {
             amounts[account.persistentModelID] = ""
