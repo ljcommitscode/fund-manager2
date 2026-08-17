@@ -36,9 +36,9 @@ struct AutomatorView: View {
                         )
                     )
                     .multilineTextAlignment(.trailing)
-#if os(iOS)
-                    .keyboardType(.numbersAndPunctuation)
-#endif
+                    #if os(iOS)
+                    .keyboardType(.decimalPad)
+                    #endif
                 }
 
                 Section("Accounts") {
@@ -48,16 +48,17 @@ struct AutomatorView: View {
 
                             Spacer()
 
+                            if account.isExtraCollector {
+                                Text("(Collector)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
                             Text(
                                 "\(account.percent, specifier: "%.2f")%"
                             )
                             .foregroundStyle(.secondary)
 
-                            if account.isExtraCollector {
-                                Text("Collector")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
                         }
                     }
                 }
@@ -76,39 +77,51 @@ struct AutomatorView: View {
     }
 
     // MARK: - Money Input
-
+    
     private func filteredMoneyInput(_ input: String) -> String {
+        var result = ""
+        var hasDecimal = false
+        var decimalPlaces = 0
 
-        // Keep only numbers and decimal points.
-        let filtered = input.filter {
-            $0.isNumber || $0 == "."
+        for character in input {
+
+            // Allow a negative sign only as the first character.
+            if character == "-" {
+                if result.isEmpty {
+                    result.append(character)
+                }
+                continue
+            }
+
+            // Allow only one decimal point.
+            if character == "." {
+                if !hasDecimal {
+                    hasDecimal = true
+                    result.append(character)
+                }
+                continue
+            }
+
+            // Allow numbers.
+            if character.isNumber {
+
+                // Once we have two digits after the decimal,
+                // ignore any additional digits.
+                if hasDecimal {
+                    guard decimalPlaces < 2 else {
+                        continue
+                    }
+
+                    decimalPlaces += 1
+                }
+
+                result.append(character)
+            }
         }
 
-        // Only allow one decimal point.
-        let components = filtered.split(
-            separator: ".",
-            omittingEmptySubsequences: false
-        )
-
-        if components.count > 2 {
-            return totalAmount
-        }
-
-        // Limit the decimal portion to two digits.
-        if components.count == 2 {
-            let wholePart = String(components[0])
-            let decimalPart = String(components[1])
-
-            let limitedDecimal = String(
-                decimalPart.prefix(2)
-            )
-
-            return "\(wholePart).\(limitedDecimal)"
-        }
-
-        return filtered
+        return result
     }
-
+    
     // MARK: - Automator
 
     private func automateAccounts() {
@@ -120,11 +133,6 @@ struct AutomatorView: View {
 
         guard let enteredAmount = Double(totalAmount) else {
             showError("Please enter a valid dollar amount.")
-            return
-        }
-
-        guard enteredAmount >= 0 else {
-            showError("The amount cannot be negative.")
             return
         }
 
@@ -161,7 +169,7 @@ struct AutomatorView: View {
 
             // Only allocate whole cents.
             let accountCents = Int(
-                floor(calculatedCents + 0.000000001)
+                calculatedCents.rounded(.towardZero)
             )
 
             allocatedCents += accountCents
@@ -181,7 +189,7 @@ struct AutomatorView: View {
             totalCents - allocatedCents
 
         // Give every remaining penny to the Extra Collector.
-        if remainingCents > 0 {
+        if remainingCents != 0 {
 
             let collectorChange =
                 Double(remainingCents) / 100.0

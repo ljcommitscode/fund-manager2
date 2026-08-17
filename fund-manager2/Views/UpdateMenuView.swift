@@ -25,16 +25,16 @@ struct UpdateMenuView: View {
                                 get: {
                                     amounts[account.persistentModelID] ?? ""
                                 },
-                                set: {
-                                    amounts[account.persistentModelID] = $0
+                                set: { newValue in
+                                    amounts[account.persistentModelID] =
+                                        filteredMoneyInput(newValue)
                                 }
                             )
                         )
                         .multilineTextAlignment(.trailing)
-
-#if os(iOS)
-                        .keyboardType(.numbersAndPunctuation)
-#endif
+                        #if os(iOS)
+                        .keyboardType(.decimalPad)
+                        #endif
                     }
                 }
 
@@ -48,7 +48,50 @@ struct UpdateMenuView: View {
             }
         }
     }
+    
+    private func filteredMoneyInput(_ input: String) -> String {
+        var result = ""
+        var hasDecimal = false
+        var decimalPlaces = 0
 
+        for character in input {
+
+            // Allow a negative sign only as the first character.
+            if character == "-" {
+                if result.isEmpty {
+                    result.append(character)
+                }
+                continue
+            }
+
+            // Allow only one decimal point.
+            if character == "." {
+                if !hasDecimal {
+                    hasDecimal = true
+                    result.append(character)
+                }
+                continue
+            }
+
+            // Allow numbers.
+            if character.isNumber {
+
+                // Once we have two digits after the decimal,
+                // ignore any additional digits.
+                if hasDecimal {
+                    guard decimalPlaces < 2 else {
+                        continue
+                    }
+
+                    decimalPlaces += 1
+                }
+
+                result.append(character)
+            }
+        }
+
+        return result
+    }
     private func populateFields() {
         for account in accounts {
             amounts[account.persistentModelID] = ""
