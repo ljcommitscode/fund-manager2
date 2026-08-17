@@ -21,6 +21,22 @@ struct DashboardView: View {
     @State private var newAccount = false
     @State private var settings = false
     @State private var selectedAccount: Account?
+    
+    private func accountChange(for account: Account) -> Double? {
+        let accountSnapshots = snapshots
+            .filter { $0.accountID == account.id }
+            .sorted { $0.createdAt > $1.createdAt }
+
+        guard accountSnapshots.count >= 2 else {
+            return nil
+        }
+
+        let current = accountSnapshots[0].amount
+        let previous = accountSnapshots[1].amount
+
+        return current - previous
+    }
+    
     var body: some View {
         VStack {
             Text("Hello \(profile.username)!")
@@ -43,15 +59,6 @@ struct DashboardView: View {
                     }
                 }
             }
-            /*HStack{
-                TextField("New Account", text: $newAccountTitle)
-                    .textFieldStyle(.roundedBorder)
-                Button("Add") {
-                    addAccount()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(newAccountTitle.isEmpty)
-            }*/
             List {
                 ForEach(accounts) { account in
                     HStack {
@@ -59,8 +66,40 @@ struct DashboardView: View {
                             selectedAccount = account
                             showingAccount = true
                         }
+                        
                         Spacer()
-                        Text("\(account.amount)")
+                        
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text(account.amount.formatted(.currency(code: "USD")))
+                            
+                            if let change = accountChange(for: account) {
+                                if change > 0 {
+                                    Label(
+                                        change.formatted(.currency(code: "USD")),
+                                        systemImage: "arrow.up"
+                                    )
+                                    .foregroundStyle(.green)
+                                    .font(.caption)
+                                    
+                                } else if change < 0 {
+                                    Label(
+                                        change.formatted(.currency(code: "USD")),
+                                        systemImage: "arrow.down"
+                                    )
+                                    .foregroundStyle(.red)
+                                    .font(.caption)
+                                    
+                                } else {
+                                    Text("-")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            } else {
+                                Text("-")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     }
                 }
             }
@@ -83,10 +122,5 @@ struct DashboardView: View {
                 SettingsView(profile: profile)
             }
         }
-    }
-    private func addAccount() {
-        let newAccount = Account(name: newAccountTitle, amount: 0, percent: 0)
-        modelContext.insert(newAccount)
-        newAccountTitle = ""
     }
 }

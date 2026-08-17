@@ -33,7 +33,7 @@ struct UpdateMenuView: View {
                         .multilineTextAlignment(.trailing)
 
 #if os(iOS)
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.numbersAndPunctuation)
 #endif
                     }
                 }
@@ -51,7 +51,7 @@ struct UpdateMenuView: View {
 
     private func populateFields() {
         for account in accounts {
-            amounts[account.persistentModelID] = String(account.amount)
+            amounts[account.persistentModelID] = ""
         }
     }
 
@@ -101,16 +101,19 @@ struct UpdateMenuView: View {
         for account in accounts {
             guard
                 let text = amounts[account.persistentModelID],
-                let value = Double(text)
+                let change = Double(text)
             else {
                 continue
             }
 
-            account.amount = value
+            let originalAmount = account.amount
+            let newAmount = originalAmount + change
+
+            account.amount = newAmount
 
             addSnapshot(
                 accountID: account.id,
-                accountAmount: value
+                accountAmount: newAmount
             )
         }
 

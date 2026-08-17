@@ -19,9 +19,13 @@ struct AutomatorView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Total Amount") {
+                Section("Amount to Add") {
                     TextField("0.00", text: $totalAmount)
                         .multilineTextAlignment(.trailing)
+
+#if os(iOS)
+                        .keyboardType(.numbersAndPunctuation)
+#endif
                 }
 
                 Section("Accounts") {
@@ -46,13 +50,18 @@ struct AutomatorView: View {
     }
 
     private func automateAccounts() {
-        guard let total = Double(totalAmount) else {
+        guard let enteredAmount = Double(totalAmount) else {
             return
         }
 
         for account in accounts {
+            let originalAmount = account.amount
+
             let percentage = account.percent / 100.0
-            let newAmount = total * percentage
+
+            let accountChange = enteredAmount * percentage
+
+            let newAmount = originalAmount + accountChange
 
             account.amount = newAmount
 
