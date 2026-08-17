@@ -34,7 +34,7 @@ struct CreateAccountView: View {
         }
     }
     private func addAccount() {
-        let newAccount = Account(name: newAccountTitle, amount: 0, percent: 0)
+        let newAccount = Account(name: newAccountTitle, amount: 0, percent: 0, isExtraCollector: false)
         modelContext.insert(newAccount)
         newAccountTitle = ""
         dismiss()

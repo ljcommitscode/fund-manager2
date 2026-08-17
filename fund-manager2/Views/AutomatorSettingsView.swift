@@ -18,6 +18,7 @@ struct AutomatorSettingsView: View {
     @Query private var accounts: [Account]
     
     @State private var showingPercentError = false
+    @State private var selectedCollectorID: PersistentIdentifier?
     
     private var totalPercent: Double {
         accounts.reduce(0) { total, account in
@@ -31,6 +32,25 @@ struct AutomatorSettingsView: View {
             Text("Automator Settings")
                 .font(.title)
                 .padding()
+            
+            Spacer()
+            
+            Section("Extra Collector") {
+                Picker("Account", selection: $selectedCollectorID) {
+                    Text("None")
+                        .tag(Optional<PersistentIdentifier>.none)
+
+                    ForEach(accounts) { account in
+                        Text(account.name)
+                            .tag(Optional(account.persistentModelID))
+                    }
+                }
+            }
+            .onAppear {
+                selectedCollectorID = accounts.first(where: {
+                    $0.isExtraCollector
+                })?.persistentModelID
+            }
             
             VStack {
                 
@@ -82,9 +102,15 @@ struct AutomatorSettingsView: View {
     
     private func saveChanges() {
         
+        
         if abs(totalPercent - 100) > 0.001 {
             showingPercentError = true
             return
+        }
+        
+        for account in accounts {
+            account.isExtraCollector =
+                account.persistentModelID == selectedCollectorID
         }
         
         do {

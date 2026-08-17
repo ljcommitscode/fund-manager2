@@ -14,14 +14,16 @@ class Account {
     var name: String
     var amount: Double
     var percent: Double
+    var isExtraCollector: Bool
     
     @Relationship(deleteRule: .cascade)
     var snapshots: [Snapshot]
     
-    init(name: String, amount: Double, percent: Double) {
+    init(name: String, amount: Double, percent: Double, isExtraCollector: Bool) {
         self.name = name
         self.amount = amount
         self.percent = percent
         self.snapshots = []
+        self.isExtraCollector = isExtraCollector
     }
 }
