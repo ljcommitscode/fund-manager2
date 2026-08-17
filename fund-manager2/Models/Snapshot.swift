@@ -4,22 +4,22 @@
 //
 //  Created by Leon Cutler on 7/27/26.
 //
-
 import Foundation
 import SwiftData
-
 
 @Model
 class Snapshot {
     var createdAt: Date
-    var accountName: String
+    var accountID: UUID
     var amount: Double
-    
-    
-    init(createdAt: Date, name: String, amount: Double) {
+
+    init(
+        createdAt: Date,
+        accountID: UUID,
+        amount: Double
+    ) {
         self.createdAt = createdAt
-        self.accountName = name
+        self.accountID = accountID
         self.amount = amount
     }
-    
 }

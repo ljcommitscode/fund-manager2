@@ -1,58 +1,69 @@
+//
+//  AutomatorView.swift
+//  fund-manager2
+//
+//  Created by Leon Cutler on 8/16/26.
+
 import SwiftUI
 import SwiftData
 
-struct UpdateMenuView: View {
+struct AutomatorView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @Query private var accounts: [Account]
 
-    @State private var amounts: [PersistentIdentifier: String] = [:]
+    @State private var totalAmount = ""
 
     var body: some View {
         NavigationStack {
             Form {
-                ForEach(accounts) { account in
-                    HStack {
-                        Text(account.name)
-
-                        Spacer()
-
-                        TextField(
-                            "0.00",
-                            text: Binding(
-                                get: {
-                                    amounts[account.persistentModelID] ?? ""
-                                },
-                                set: {
-                                    amounts[account.persistentModelID] = $0
-                                }
-                            )
-                        )
+                Section("Total Amount") {
+                    TextField("0.00", text: $totalAmount)
                         .multilineTextAlignment(.trailing)
+                }
 
-#if os(iOS)
-                        .keyboardType(.decimalPad)
-#endif
+                Section("Accounts") {
+                    ForEach(accounts) { account in
+                        HStack {
+                            Text(account.name)
+
+                            Spacer()
+
+                            Text("\(account.percent, specifier: "%.2f")%")
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
 
-                Button("Save Changes") {
-                    saveChanges()
+                Button("Apply Amount") {
+                    automateAccounts()
                 }
             }
-            .navigationTitle("Update Accounts")
-            .onAppear {
-                populateFields()
-            }
+            .navigationTitle("Automator")
         }
     }
 
-    private func populateFields() {
-        for account in accounts {
-            amounts[account.persistentModelID] = String(account.amount)
+    private func automateAccounts() {
+        guard let total = Double(totalAmount) else {
+            return
         }
+
+        for account in accounts {
+            let percentage = account.percent / 100.0
+            let newAmount = total * percentage
+
+            account.amount = newAmount
+
+            addSnapshot(
+                accountID: account.id,
+                accountAmount: newAmount
+            )
+        }
+
+        try? modelContext.save()
+        dismiss()
     }
 
     private func addSnapshot(
@@ -95,26 +106,5 @@ struct UpdateMenuView: View {
         )
 
         modelContext.insert(newSnapshot)
-    }
-
-    private func saveChanges() {
-        for account in accounts {
-            guard
-                let text = amounts[account.persistentModelID],
-                let value = Double(text)
-            else {
-                continue
-            }
-
-            account.amount = value
-
-            addSnapshot(
-                accountID: account.id,
-                accountAmount: value
-            )
-        }
-
-        try? modelContext.save()
-        dismiss()
     }
 }

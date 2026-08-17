@@ -17,6 +17,7 @@ struct DashboardView: View {
     @State private var newAccountTitle = ""
     @State private var showingAccount = false
     @State private var gonnaUpdate = false
+    @State private var gonnaAutomate = false
     @State private var newAccount = false
     @State private var settings = false
     @State private var selectedAccount: Account?
@@ -25,6 +26,10 @@ struct DashboardView: View {
             Text("Hello \(profile.username)!")
             .toolbar {
                 ToolbarItemGroup {
+                    Button("Auto") {
+                        gonnaAutomate = true
+                    }
+                    
                     Button("Update") {
                         gonnaUpdate = true
                     }
@@ -66,10 +71,16 @@ struct DashboardView: View {
                 }
             }
             .sheet(isPresented: $gonnaUpdate) {
-                UpdateMenuView(profile: profile)
+                UpdateMenuView()
+            }
+            .sheet(isPresented: $gonnaAutomate) {
+                AutomatorView()
             }
             .sheet(isPresented: $newAccount) {
                 CreateAccountView(profile: profile)
+            }
+            .sheet(isPresented: $settings) {
+                SettingsView(profile: profile)
             }
         }
     }
