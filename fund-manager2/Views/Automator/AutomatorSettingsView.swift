@@ -21,9 +21,9 @@ struct AutomatorSettingsView: View {
     @State private var selectedCollectorID: PersistentIdentifier?
     
     private var totalPercent: Double {
-        accounts.reduce(0) { total, account in
-            total + account.percent
-        }
+        AutomatorService.totalPercentage(
+            accounts: accounts
+        )
     }
     
     var body: some View {
@@ -36,20 +36,30 @@ struct AutomatorSettingsView: View {
             Spacer()
             
             Section("Extra Collector") {
-                Picker("Account", selection: $selectedCollectorID) {
+                Picker(
+                    "Account",
+                    selection: $selectedCollectorID
+                ) {
                     Text("None")
-                        .tag(Optional<PersistentIdentifier>.none)
-
+                        .tag(
+                            Optional<PersistentIdentifier>.none
+                        )
+                    
                     ForEach(accounts) { account in
                         Text(account.name)
-                            .tag(Optional(account.persistentModelID))
+                            .tag(
+                                Optional(
+                                    account.persistentModelID
+                                )
+                            )
                     }
                 }
             }
             .onAppear {
-                selectedCollectorID = accounts.first(where: {
-                    $0.isExtraCollector
-                })?.persistentModelID
+                selectedCollectorID =
+                    accounts.first(where: {
+                        $0.isExtraCollector
+                    })?.persistentModelID
             }
             
             VStack {
@@ -58,12 +68,10 @@ struct AutomatorSettingsView: View {
                     
                     HStack {
                         
-                        // Account name
                         Text(account.name)
                         
                         Spacer()
                         
-                        // Percentage text field
                         TextField(
                             "Percent",
                             value: Binding(
@@ -92,32 +100,44 @@ struct AutomatorSettingsView: View {
             }
             .buttonStyle(.borderedProminent)
             .padding()
-            .alert("Invalid Percentages", isPresented: $showingPercentError) {
+            .alert(
+                "Invalid Percentages",
+                isPresented: $showingPercentError
+            ) {
                 Button("OK", role: .cancel) { }
             } message: {
-                Text("Your percentages must add up to 100%. They currently add up to \(totalPercent)%.")
+                Text(
+                    "Your percentages must add up to 100%. " +
+                    "They currently add up to " +
+                    "\(totalPercent)%. "
+                )
             }
         }
     }
     
+    // MARK: - Save
+    
     private func saveChanges() {
         
-        
-        if abs(totalPercent - 100) > 0.001 {
+        guard AutomatorService.percentagesAreValid(
+            accounts: accounts
+        ) else {
             showingPercentError = true
             return
         }
         
-        for account in accounts {
-            account.isExtraCollector =
-                account.persistentModelID == selectedCollectorID
-        }
+        AutomatorService.setCollector(
+            id: selectedCollectorID,
+            accounts: accounts
+        )
         
         do {
             try modelContext.save()
             dismiss()
         } catch {
-            print("Could not save changes: \(error)")
+            print(
+                "Could not save Automator settings: \(error)"
+            )
         }
     }
 }
