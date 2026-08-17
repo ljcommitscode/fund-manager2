@@ -10,12 +10,17 @@ import SwiftData
 
 @main
 struct fund_manager2App: App {
+
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: Profile.self)
-        .modelContainer(for: Account.self)
-        .modelContainer(for: Snapshot.self)
+        .modelContainer(
+            for: [
+                Profile.self,
+                Account.self,
+                Snapshot.self
+            ]
+        )
     }
 }

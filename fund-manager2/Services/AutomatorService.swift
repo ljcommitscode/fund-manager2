@@ -43,6 +43,7 @@ enum AutomatorError: LocalizedError {
     }
 }
 
+@MainActor
 struct AutomatorService {
     
     // MARK: - Allocation Calculation

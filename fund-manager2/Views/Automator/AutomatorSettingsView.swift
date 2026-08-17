@@ -16,6 +16,7 @@ struct AutomatorSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Query private var accounts: [Account]
+    @Query private var snapshots: [Snapshot]
     
     @State private var showingPercentError = false
     @State private var selectedCollectorID: PersistentIdentifier?
@@ -133,6 +134,12 @@ struct AutomatorSettingsView: View {
         
         do {
             try modelContext.save()
+            
+            WidgetExporter.export(
+                accounts: accounts,
+                snapshots: snapshots
+            )
+            
             dismiss()
         } catch {
             print(

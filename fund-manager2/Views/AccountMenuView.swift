@@ -19,6 +19,7 @@ struct AccountMenuView: View {
     }
 
     @Environment(\.modelContext) private var modelContext
+    @Query private var accounts: [Account]
     @Query private var snapshots: [Snapshot]
 
     @State private var selectedDate: Date?
@@ -194,6 +195,12 @@ struct AccountMenuView: View {
 
         if modelContext.hasChanges {
             try? modelContext.save()
+            
+            WidgetExporter.export(
+                accounts: accounts,
+                snapshots: snapshots
+            )
+            
             chartRefreshID = UUID()
         }
     }

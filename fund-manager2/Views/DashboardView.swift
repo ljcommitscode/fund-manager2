@@ -110,7 +110,7 @@ struct DashboardView: View {
                 }
             }
             .sheet(isPresented: $gonnaUpdate) {
-                UpdateMenuView()
+                UpdateMenuView(profile: profile)
             }
             .sheet(isPresented: $gonnaAutomate) {
                 AutomatorView()
@@ -120,6 +120,12 @@ struct DashboardView: View {
             }
             .sheet(isPresented: $settings) {
                 SettingsView(profile: profile)
+            }
+            .task(id: "\(accounts.count)-\(snapshots.count)") {
+                WidgetExporter.export(
+                    accounts: accounts,
+                    snapshots: snapshots
+                )
             }
         }
     }

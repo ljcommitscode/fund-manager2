@@ -2,11 +2,12 @@ import SwiftUI
 import SwiftData
 
 struct UpdateMenuView: View {
-
+    let profile: Profile
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @Query private var accounts: [Account]
+    @Query private var snapshots: [Snapshot]
 
     @State private var amounts: [PersistentIdentifier: String] = [:]
 
@@ -115,6 +116,12 @@ struct UpdateMenuView: View {
         }
 
         try? modelContext.save()
+        
+        WidgetExporter.export(
+            accounts: accounts,
+            snapshots: snapshots
+        )
+        
         dismiss()
     }
 }

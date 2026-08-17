@@ -6,14 +6,84 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		87B2BFD7303376760039347E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87B2BFBC303376260039347E /* WidgetKit.framework */; };
+		87B2BFD8303376760039347E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87B2BFBE303376260039347E /* SwiftUI.framework */; };
+		87B2BFE5303376780039347E /* FundManagerWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 87B2BFD6303376760039347E /* FundManagerWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		87B2BFE3303376780039347E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 873D65D430126B28000CA9D3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 87B2BFD5303376760039347E;
+			remoteInfo = FundManagerWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		87B2BFD1303376290039347E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				87B2BFE5303376780039347E /* FundManagerWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		873D65DC30126B28000CA9D3 /* fund-manager2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "fund-manager2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		87B2BFBC303376260039347E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		87B2BFBE303376260039347E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		87B2BFD6303376760039347E /* FundManagerWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FundManagerWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		87B2BFEB303376FC0039347E /* FundManagerWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FundManagerWidgetsExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		87B2BFE6303376780039347E /* Exceptions for "FundManagerWidgets" folder in "FundManagerWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 87B2BFD5303376760039347E /* FundManagerWidgetsExtension */;
+		};
+		87B2C00530337C680039347E /* Exceptions for "FundManagerWidgets" folder in "fund-manager2" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				GraphType.swift,
+			);
+			target = 873D65DB30126B28000CA9D3 /* fund-manager2 */;
+		};
+		87B2C00A30337D940039347E /* Exceptions for "fund-manager2" folder in "FundManagerWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Providers/WidgetSharedData.swift,
+			);
+			target = 87B2BFD5303376760039347E /* FundManagerWidgetsExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		873D65DE30126B28000CA9D3 /* fund-manager2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				87B2C00A30337D940039347E /* Exceptions for "fund-manager2" folder in "FundManagerWidgetsExtension" target */,
+			);
 			path = "fund-manager2";
+			sourceTree = "<group>";
+		};
+		87B2BFD9303376760039347E /* FundManagerWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				87B2C00530337C680039347E /* Exceptions for "FundManagerWidgets" folder in "fund-manager2" target */,
+				87B2BFE6303376780039347E /* Exceptions for "FundManagerWidgets" folder in "FundManagerWidgetsExtension" target */,
+			);
+			path = FundManagerWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,13 +96,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		87B2BFD3303376760039347E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				87B2BFD8303376760039347E /* SwiftUI.framework in Frameworks */,
+				87B2BFD7303376760039347E /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		873D65D330126B28000CA9D3 = {
 			isa = PBXGroup;
 			children = (
+				87B2BFEB303376FC0039347E /* FundManagerWidgetsExtension.entitlements */,
 				873D65DE30126B28000CA9D3 /* fund-manager2 */,
+				87B2BFD9303376760039347E /* FundManagerWidgets */,
+				87B2BFBB303376260039347E /* Frameworks */,
 				873D65DD30126B28000CA9D3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +123,18 @@
 			isa = PBXGroup;
 			children = (
 				873D65DC30126B28000CA9D3 /* fund-manager2.app */,
+				87B2BFD6303376760039347E /* FundManagerWidgetsExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		87B2BFBB303376260039347E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				87B2BFBC303376260039347E /* WidgetKit.framework */,
+				87B2BFBE303376260039347E /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +147,12 @@
 				873D65D830126B28000CA9D3 /* Sources */,
 				873D65D930126B28000CA9D3 /* Frameworks */,
 				873D65DA30126B28000CA9D3 /* Resources */,
+				87B2BFD1303376290039347E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				87B2BFE4303376780039347E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				873D65DE30126B28000CA9D3 /* fund-manager2 */,
@@ -69,6 +163,28 @@
 			productName = "fund-manager2";
 			productReference = 873D65DC30126B28000CA9D3 /* fund-manager2.app */;
 			productType = "com.apple.product-type.application";
+		};
+		87B2BFD5303376760039347E /* FundManagerWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 87B2BFE7303376780039347E /* Build configuration list for PBXNativeTarget "FundManagerWidgetsExtension" */;
+			buildPhases = (
+				87B2BFD2303376760039347E /* Sources */,
+				87B2BFD3303376760039347E /* Frameworks */,
+				87B2BFD4303376760039347E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				87B2BFD9303376760039347E /* FundManagerWidgets */,
+			);
+			name = FundManagerWidgetsExtension;
+			packageProductDependencies = (
+			);
+			productName = FundManagerWidgetsExtension;
+			productReference = 87B2BFD6303376760039347E /* FundManagerWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +197,9 @@
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					873D65DB30126B28000CA9D3 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					87B2BFD5303376760039347E = {
 						CreatedOnToolsVersion = 26.5;
 					};
 				};
@@ -100,12 +219,20 @@
 			projectRoot = "";
 			targets = (
 				873D65DB30126B28000CA9D3 /* fund-manager2 */,
+				87B2BFD5303376760039347E /* FundManagerWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		873D65DA30126B28000CA9D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		87B2BFD4303376760039347E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +249,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		87B2BFD2303376760039347E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		87B2BFE4303376780039347E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 87B2BFD5303376760039347E /* FundManagerWidgetsExtension */;
+			targetProxy = 87B2BFE3303376780039347E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		873D65E530126B2C000CA9D3 /* Debug */ = {
@@ -251,6 +393,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "fund-manager2/fund-manager2.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FNZ342D35M;
@@ -283,6 +426,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "fund-manager2/fund-manager2.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FNZ342D35M;
@@ -310,6 +454,68 @@
 			};
 			name = Release;
 		};
+		87B2BFE8303376780039347E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FundManagerWidgetsExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FNZ342D35M;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FundManagerWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FundManagerWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.UnoUnoStudios.fund-manager2.FundManagerWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		87B2BFE9303376780039347E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FundManagerWidgetsExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FNZ342D35M;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FundManagerWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FundManagerWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.UnoUnoStudios.fund-manager2.FundManagerWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -327,6 +533,15 @@
 			buildConfigurations = (
 				873D65E830126B2C000CA9D3 /* Debug */,
 				873D65E930126B2C000CA9D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		87B2BFE7303376780039347E /* Build configuration list for PBXNativeTarget "FundManagerWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				87B2BFE8303376780039347E /* Debug */,
+				87B2BFE9303376780039347E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
