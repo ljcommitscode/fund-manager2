@@ -19,6 +19,16 @@ struct AutomatorView: View {
     @State private var totalAmount = ""
     @State private var showingError = false
     @State private var errorMessage = ""
+    
+    private struct AllocationPreview: Identifiable {
+        let id: UUID
+        let accountName: String
+        let currentAmount: Double
+        let change: Double
+        let updatedAmount: Double
+        let percent: Double
+        let isCollector: Bool
+    }
 
     var body: some View {
         NavigationStack {
@@ -49,6 +59,56 @@ struct AutomatorView: View {
                             )
                             .foregroundStyle(.secondary)
 
+                        }
+                    }
+                }
+                
+                Section("Preview") {
+                    if allocationPreview.isEmpty {
+                        Text("Enter an amount above to see the updated balances.")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(allocationPreview) { preview in
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack {
+                                    Text(preview.accountName)
+
+                                    Spacer()
+
+                                    if preview.isCollector {
+                                        Text("(Collector)")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+
+                                HStack {
+                                    Text(
+                                        preview.currentAmount,
+                                        format: .currency(code: "USD")
+                                    )
+                                    .foregroundStyle(.secondary)
+
+                                    Image(systemName: "arrow.right")
+                                        .foregroundStyle(.secondary)
+
+                                    Text(
+                                        preview.updatedAmount,
+                                        format: .currency(code: "USD")
+                                    )
+                                    .fontWeight(.semibold)
+
+                                    Spacer()
+
+                                    Text(
+                                        preview.change,
+                                        format: .currency(code: "USD")
+                                    )
+                                    .foregroundStyle(.secondary)
+                                }
+                                .font(.subheadline)
+                            }
+                            .padding(.vertical, 2)
                         }
                     }
                 }
@@ -158,6 +218,67 @@ struct AutomatorView: View {
         } catch {
             showError(
                 "Could not save the automator changes."
+            )
+        }
+    }
+    
+    private var allocationPreview: [AllocationPreview] {
+
+        guard let enteredAmount = Double(totalAmount) else {
+            return []
+        }
+
+        let totalCents = Int(
+            (enteredAmount * 100).rounded()
+        )
+
+        var allocatedCents = 0
+
+        var changes: [UUID: Int] = [:]
+
+        // Calculate the normal percentage allocations.
+        for account in accounts {
+
+            let percentage = account.percent / 100.0
+
+            let calculatedCents =
+                Double(totalCents) * percentage
+
+            let accountCents = Int(
+                calculatedCents.rounded(.towardZero)
+            )
+
+            changes[account.id] = accountCents
+            allocatedCents += accountCents
+        }
+
+        // Give the remainder to the collector.
+        let remainingCents = totalCents - allocatedCents
+
+        if let collector = accounts.first(where: {
+            $0.isExtraCollector
+        }) {
+            changes[collector.id, default: 0] += remainingCents
+        }
+
+        return accounts.map { account in
+
+            let changeCents = changes[account.id] ?? 0
+
+            let change = Double(changeCents) / 100.0
+
+            let updatedAmount = round(
+                (account.amount + change) * 100
+            ) / 100
+
+            return AllocationPreview(
+                id: account.id,
+                accountName: account.name,
+                currentAmount: account.amount,
+                change: change,
+                updatedAmount: updatedAmount,
+                percent: account.percent,
+                isCollector: account.isExtraCollector
             )
         }
     }
