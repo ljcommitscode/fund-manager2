@@ -25,6 +25,7 @@ struct AccountMenuView: View {
     @State private var selectedDate: Date?
     @State private var dateIdle: Date?
     @State private var chartRefreshID = UUID()
+    @State private var isLine = false
 
     private var filteredSnapshots: [Snapshot] {
         snapshots
@@ -68,44 +69,85 @@ struct AccountMenuView: View {
 
             Spacer(minLength: 8)
 
-            Chart {
-                ForEach(filteredSnapshots) { snap in
-                    BarMark(
-                        x: .value(
-                            "Day",
-                            snap.createdAt,
-                            unit: .day
-                        ),
-                        y: .value(
-                            "Amount",
-                            snap.amount
+            if isLine == false {
+                Chart {
+                    ForEach(filteredSnapshots) { snap in
+                        BarMark(
+                            x: .value(
+                                "Day",
+                                snap.createdAt,
+                                unit: .day
+                            ),
+                            y: .value(
+                                "Amount",
+                                snap.amount
+                            )
                         )
-                    )
-                    .foregroundStyle(
-                        isSelectedSnapshot(snap)
-                            ? Color.accentColor
-                            : Color.blue.opacity(0.75)
-                    )
+                        .foregroundStyle(
+                            isSelectedSnapshot(snap)
+                                ? Color.accentColor
+                                : Color.blue.opacity(0.75)
+                        )
+                    }
                 }
+                .chartXSelection(value: $selectedDate)
+                .chartXAxis {
+                    AxisMarks(values: .automatic)
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading)
+                }
+                .padding()
+                .background(
+                    Color(.systemBackground),
+                    in: RoundedRectangle(cornerRadius: 16)
+                )
+                .shadow(
+                    color: .gray.opacity(0.15),
+                    radius: 6,
+                    x: 0,
+                    y: 3
+                )
+            } else if isLine == true {
+                Chart {
+                    ForEach(filteredSnapshots) { snap in
+                        LineMark(
+                            x: .value(
+                                "Day",
+                                snap.createdAt,
+                                unit: .day
+                            ),
+                            y: .value(
+                                "Amount",
+                                snap.amount
+                            )
+                        )
+                        .foregroundStyle(
+                            isSelectedSnapshot(snap)
+                                ? Color.accentColor
+                                : Color.blue.opacity(0.75)
+                        )
+                    }
+                }
+                .chartXSelection(value: $selectedDate)
+                .chartXAxis {
+                    AxisMarks(values: .automatic)
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading)
+                }
+                .padding()
+                .background(
+                    Color(.systemBackground),
+                    in: RoundedRectangle(cornerRadius: 16)
+                )
+                .shadow(
+                    color: .gray.opacity(0.15),
+                    radius: 6,
+                    x: 0,
+                    y: 3
+                )
             }
-            .chartXSelection(value: $selectedDate)
-            .chartXAxis {
-                AxisMarks(values: .automatic)
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading)
-            }
-            .padding()
-            .background(
-                Color(.systemBackground),
-                in: RoundedRectangle(cornerRadius: 16)
-            )
-            .shadow(
-                color: .gray.opacity(0.15),
-                radius: 6,
-                x: 0,
-                y: 3
-            )
         }
         .id(chartRefreshID)
         .padding()
